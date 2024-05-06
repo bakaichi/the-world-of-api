@@ -1,0 +1,34 @@
+{
+  "name": "the-world-of-avatar2",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npx nodemon src/server.js  --ignore 'src/models/json/*.json'",
+    "lint": "npx eslint . --ext .js",
+    "test": "npx mocha --ui tdd test/**/*.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@hapi/cookie": "^12.0.1",
+    "@hapi/hapi": "^21.3.9",
+    "@hapi/inert": "^7.1.0",
+    "@hapi/vision": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "handlebars": "^4.7.8",
+    "mais-mongoose-seeder": "^1.0.7",
+    "mongoose": "^8.3.3"
+  }
+}

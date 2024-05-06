@@ -1,0 +1,38 @@
+<Card title="Lore additions to date">
+    <table class="table is-fullwidth">
+        <thead>
+            <tr>
+            <th>Book no.</th>
+            <th>Characters involved</th>
+            <th>Lat</th>
+            <th>Lng</th>
+            <th>Lore</th>
+            <th>Contributor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each lore}}
+            <tr>
+                <td>
+                    {{bookno}}
+                </td>
+                <td>
+                    {{charactersinv}}
+                </td>
+                <td>
+                    {{lat}}
+                </td>
+                <td>
+                    {{lng}}
+                </td>
+                <td>
+                    {{lore}}
+                </td>
+                <td>
+                    {{contributor}}
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</Card>

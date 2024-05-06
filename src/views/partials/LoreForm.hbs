@@ -1,0 +1,140 @@
+<form action="/addlore" method="POST">
+  <div class="field">
+    <label class="label">Enter Lore Details</label>
+    <input class="input" type="number" min="1" max="3" placeholder="Enter book number" name="bookno">
+  </div>
+  <div class="box field is-horizontal">
+    <div class="field-body ml-6">
+      <div class="control is-expanded mt-2">
+        <select class="input select2-character" name="charactersinv" multiple="multiple" >
+          {{#each characters}}
+            <option value="{{this.name}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="field-body">
+        <div class="select">
+          <select id="nation" name="nationid" >
+            {{#each nations}}
+              <option value="{{this._id}}">{{this.title}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="field-body">
+      <div class="select is-fullwidth">
+        <select name="location" class="input select2-location">
+          <option value="Kaiyo Ocean">Kaiyo Ocean</option>
+                <option value="Island of the Sun Warriors">Island of the Sun Warriors</option>
+                <option value="The Boiling Rock">The Boiling Rock</option>
+                <option value="Sunset City">Sunset City</option>
+                <option value="Nagano Beach">Nagano Beach</option>
+                <option value="Konaru">Konaru</option>
+                <option value="Black Cliffs">Black Cliffs</option>
+                <option value="Gates of Azulon">Gates of Azulon</option>
+                <option value="Numata">Numata</option>
+                <option value="North Chung-Ling">North Chung-Ling</option>
+                <option value="Shuhon Island">Shuhon Island</option>
+                <option value="Kohai">Kohai</option>
+                <option value="Ember Island">Ember Island</option>
+                <option value="Shu Jing">Shu Jing</option>
+                <option value="Western Air Temple">Western Air Temple</option>
+                <option value="Jang Hui">Jang Hui</option>
+                <option value="Crescent Island">Crescent Island</option>
+                <option value="FumaBu Town">FumaBu Town</option>
+                <option value="The Arctic Sea">The Arctic Sea</option>
+                <option value="Baruu Forest">Baruu Forest</option>
+                <option value="Chima Valley">Chima Valley</option>
+                <option value="Makapu">Makapu</option>
+                <option value="Hai Dao">Hai Dao</option>
+                <option value="Taku">Taku</option>
+                <option value="Pohuai">Pohuai</option>
+                <option value="Su Oku River">Su Oku River</option>
+                <option value="Pohuai Stronghold">Pohuai Stronghold</option>
+                <option value="Merchant's Pier">Merchant's Pier</option>
+                <option value="The Great Divide">The Great Divide</option>
+                <option value="Northern Air Temple">Northern Air Temple</option>
+                <option value="Sky Peak Mountains">Sky Peak Mountains</option>
+                <option value="Senlin">Senlin</option>
+                <option value="Caipan Village">Caipan Village</option>
+                <option value="Taihua Mountains">Taihua Mountains</option>
+                <option value="Jiashui River">Jiashui River</option>
+                <option value="Serpent's Pass">Serpent's Pass</option>
+                <option value="Full Moon Bay">Full Moon Bay</option>
+                <option value="HeiBai's Forest">HeiBai's Forest</option>
+                <option value="The Lover's Pass">The Lover's Pass</option>
+                <option value="Omashu">Omashu</option>
+                <option value="Mistifying Swamp">Mistifying Swamp</option>
+                <option value="Misty Palms Oasis">Misty Palms Oasis</option>
+                <option value="Si Wong Desert">Si Wong Desert</option>
+                <option value="Si Wong Rock">Si Wong Rock</option>
+                <option value="Sandlocke City">Sandlocke City</option>
+                <option value="Xishaan Mountain Range">Xishaan Mountain Range</option>
+                <option value="Tu Zin">Tu Zin</option>
+                <option value="GaoLing">GaoLing</option>
+                <option value="Ba Sing Se">Ba Sing Se</option>
+                <option value="Lake Laogai">Lake Laogai</option>
+                <option value="Chameleon Bay">Chameleon Bay</option>
+                <option value="Miamora Island">Miamora Island</option>
+                <option value="Cope Binamon City">Cope Binamon City</option>
+                <option value="Eastern Air Temple">Eastern Air Temple</option>
+                <option value="Island of Celi">Island of Celi</option>
+                <option value="Crownlai City">Crownlai City</option>
+                <option value="Yesso Island">Yesso Island</option>
+                <option value="Chuje Islands">Chuje Islands</option>
+                <option value="Kyoshi Island">Kyoshi Island</option>
+                <option value="South Sea">South Sea</option>
+                <option value="Whale Tail Island">Whale Tail Island</option>
+                <option value="Partola Mountain Range">Partola Mountain Range</option>
+                <option value="Southern Air Temple">Southern Air Temple</option>
+                <option value="Southern Water Tribe Capital">Southern Water Tribe Capital</option>
+                <option value="The Bridge of No Return">The Bridge of No Return</option>
+                <option value="Akara Village">Akara Village</option>
+                <option value="The Northern Water Tribe">The Northern Water Tribe</option>
+                <option value="The Spirit Wilds">The Spirit Wilds</option>
+                <option value="Agna Qel'a">Agna Qel'a</option>
+                <option value="Sanikiluaq">Sanikiluaq</option>
+                <option value="Island of Kugluktuk">Island of Kugluktuk</option>
+                <option value="The Arctic Sea">The Arctic Sea</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <input class="input" type="text" placeholder="Enter lore" name="lore" >
+  </div>
+  <div class="field">
+    <div class="control">
+      <button class="button is-primary is-fullwidth">Add Lore</button>
+    </div>
+  </div>
+</form>
+
+<script>
+$(document).ready(function() {
+  $('.select2-character').select2({
+    tags: true,
+    tokenSeparators: [','],
+    minimumInputLength: 2,
+    placeholder: "Type & Select characters",
+    createTag: function (params) {
+      var term = $.trim(params.term);
+      if (term === '') {
+        return null;
+      }
+      return {
+        id: term,
+        text: term,
+        newOption: true
+      };
+    }
+  });
+
+  $('.select2-location').select2({
+    minimumInputLength: 2,
+    placeholder: "Select a location",
+    tags: false // users can't add new locations
+  });
+});
+</script>
