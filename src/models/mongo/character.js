@@ -1,9 +1,5 @@
-import Mongoose from "mongoose";
-
-const { Schema } = Mongoose;
-
+import { Schema, model } from "mongoose";
 const characterSchema = new Schema({
-  name: String,
+    name: String,
 });
-
-export const CharacterMongoose = Mongoose.model("Character", characterSchema);
+export const CharacterMongoose = model("Character", characterSchema);

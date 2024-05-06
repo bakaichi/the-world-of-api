@@ -1,5 +1,8 @@
 import { Schema, model } from "mongoose";
-const loreSchema = new Schema({
+import { Lore } from "../../types/lore-types"
+
+
+const loreSchema = new Schema<Lore>({
     bookno: Number,
     charactersinv: String,
     lore: String,
@@ -7,4 +10,5 @@ const loreSchema = new Schema({
     lng: String,
     contributor: String,
 });
-export const LoreMongoose = model("Lore", loreSchema);
+
+export const LoreMongoose = model( "Lore", loreSchema );
