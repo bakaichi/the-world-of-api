@@ -1,5 +1,5 @@
 import { CharacterMongoose } from "./character.js";
-import { Character } from "../../types/lore-types.js";
+import { Character } from "../../types/contribution-types.js";
 
 export const characterStore = {
     async find(): Promise<Character[]> {

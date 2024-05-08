@@ -1,5 +1,5 @@
 import { LoreMongoose } from "./lore.js";
-import { Lore } from "../../types/lore-types.js";
+import { Lore } from "../../types/contribution-types.js";
 
 export const loreStore = {
     async find(): Promise<Lore[]> {

@@ -15,9 +15,9 @@ export type User = {
   export type Lore = {
     bookno: number,
     charactersinv: string,
-    lore: string,
     lat: string,
     lng: string,
+    lore: string,
     contributor: string,
   };
 

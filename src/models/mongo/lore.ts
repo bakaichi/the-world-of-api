@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { Lore } from "../../types/lore-types"
+import { Lore } from "../../types/contribution-types"
 
 
 const loreSchema = new Schema<Lore>({

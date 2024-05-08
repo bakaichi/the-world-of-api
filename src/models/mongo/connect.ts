@@ -6,7 +6,7 @@ import { userStore } from "./user-store.js";
 import { seedData } from "./seed-data.js";
 import { loreStore } from "./lore-store.js";
 import { characterStore } from "./character-store.js";
-import  { Db } from "../../types/lore-types.js";
+import  { Db } from "../../types/contribution-types.js";
 
 const seedLib = mongooseSeeder.default;
 

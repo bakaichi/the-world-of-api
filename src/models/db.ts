@@ -1,4 +1,4 @@
-import { Db } from "../types/lore-types.js";
+import { Db } from "../types/contribution-types.js";
 import { connectMongo } from "./mongo/connect.js";
 
 

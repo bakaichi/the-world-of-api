@@ -1,5 +1,5 @@
 import {Schema, model} from "mongoose";
-import { User } from "../../types/lore-types";
+import { User } from "../../types/contribution-types";
 
 const userSchema = new Schema<User>({
   username: String,
