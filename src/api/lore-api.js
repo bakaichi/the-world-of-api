@@ -36,7 +36,7 @@ export const loreApi = {
             const lorePayload = request.payload;
             const lore = {
                 bookno: lorePayload.bookno,
-                charactersinv: lorePayload.charactersinv,
+                charactersinv: character.name,
                 lat: lorePayload.lat,
                 lng: lorePayload.lng,
                 lore: lorePayload.lore,

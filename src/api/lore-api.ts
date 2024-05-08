@@ -40,7 +40,7 @@ export const loreApi = {
         const lorePayload = request.payload as Lore;
         const lore = {
           bookno: lorePayload.bookno,
-          charactersinv: lorePayload.charactersinv,
+          charactersinv: character.name,
           lat: lorePayload.lat,
           lng: lorePayload.lng,
           lore: lorePayload.lore,
