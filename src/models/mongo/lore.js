@@ -6,5 +6,6 @@ const loreSchema = new Schema({
     lat: String,
     lng: String,
     contributor: String,
+    nation: String,
 });
 export const LoreMongoose = model("Lore", loreSchema);

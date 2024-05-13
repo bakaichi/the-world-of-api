@@ -15,10 +15,11 @@ export type User = {
   export type Lore = {
     bookno: number,
     charactersinv: string,
-    lat: string,
-    lng: string,
+    lat: number,
+    lng: number,
     lore: string,
     contributor: string,
+    nation: string,
   };
 
   export type Db = {

@@ -41,6 +41,7 @@ export const loreApi = {
                 lng: lorePayload.lng,
                 lore: lorePayload.lore,
                 contributor: lorePayload.contributor,
+                nation: lorePayload.nation,
             };
             const newLore = (await db.loreStore.add(lore));
             return h.response(newLore).code(200);
