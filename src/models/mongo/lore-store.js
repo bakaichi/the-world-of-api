@@ -20,4 +20,11 @@ export const loreStore = {
     async delete() {
         await LoreMongoose.deleteMany({});
     },
+    async findOne(id) {
+        const lore = await LoreMongoose.findById(id).populate("charactersinv").lean();
+        if (!lore) {
+            return null;
+        }
+        return lore;
+    },
 };

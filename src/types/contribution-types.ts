@@ -13,13 +13,14 @@ export type User = {
   };
 
   export type Lore = {
-    bookno: number,
-    charactersinv: string,
-    lat: number,
-    lng: number,
-    lore: string,
-    contributor: string,
-    nation: string,
+    bookno: number;
+    charactersinv: string;
+    lat: number;
+    lng: number;
+    lore: string;
+    contributor: string;
+    nation: string;
+    _id: string;
   };
 
   export type Db = {

@@ -57,4 +57,21 @@ export const loreApi = {
             return h.response().code(204);
         },
     },
+    findById: {
+        auth: {
+            strategy: "jwt",
+        },
+        handler: async function (request, h) {
+            try {
+                const lore = await db.loreStore.findOne(request.params.id);
+                if (!lore) {
+                    return Boom.notFound("No Lore with this id");
+                }
+                return h.response(lore).code(200);
+            }
+            catch (err) {
+                return Boom.serverUnavailable("DB error");
+            }
+        },
+    }
 };
