@@ -7,5 +7,6 @@ const loreSchema = new Schema({
     lng: String,
     contributor: String,
     nation: String,
+    images: [String],
 });
 export const LoreMongoose = model("Lore", loreSchema);
