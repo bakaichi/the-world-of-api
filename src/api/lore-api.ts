@@ -102,10 +102,32 @@ export const loreApi = {
         }
       },
     },
-    
+
+    deleteImage: {
+      auth: {
+        strategy: "jwt",
+      },
+      handler: async function (request: Request, h: ResponseToolkit) {
+        try {
+          const { loreId, imageUrl } = request.payload as { loreId: string; imageUrl: string };
+          const lore = await db.loreStore.findOne(loreId);
+          if (!lore) {
+            return Boom.notFound("No Lore with this id");
+          }
+  
+          lore.images = lore.images.filter((img: string) => img !== imageUrl);
+          await db.loreStore.update(lore);
+  
+          return h.response({ success: true }).code(200);
+        } catch (err) {
+          return Boom.serverUnavailable("Database Error");
+        }
+      },
+    },
+
   };
 
-  // Function to handle image processing outside of the loreApi object
+  // Function to handle image processing
   async function handleImages(images: any): Promise<string[]> {
     if (!images) return [];
     

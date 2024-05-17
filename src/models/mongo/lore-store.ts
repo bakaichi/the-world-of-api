@@ -33,4 +33,9 @@ export const loreStore = {
         }
         return lore;
       },
+
+      async update(lore: Lore): Promise<Lore | null> {
+        const updatedLore = await LoreMongoose.findByIdAndUpdate(lore._id, lore, { new: true }).lean();
+        return updatedLore;
+      },
  };

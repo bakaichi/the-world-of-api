@@ -27,4 +27,8 @@ export const loreStore = {
         }
         return lore;
     },
+    async update(lore) {
+        const updatedLore = await LoreMongoose.findByIdAndUpdate(lore._id, lore, { new: true }).lean();
+        return updatedLore;
+    },
 };

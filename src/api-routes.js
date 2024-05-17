@@ -17,4 +17,5 @@ export const apiRoutes = [
     { method: "POST", path: "/api/characters/{id}/lores", config: loreApi.addLore },
     { method: "DELETE", path: "/api/lores", config: loreApi.deleteAll },
     { method: "GET", path: "/api/lores/{id}", config: loreApi.findById },
+    { method: "POST", path: "/api/lores/deleteImage", config: loreApi.deleteImage },
 ];
