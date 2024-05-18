@@ -1,5 +1,6 @@
 import Boom from "@hapi/boom";
 import { db } from "../models/db.js";
+import { sanitizeInput, sanitizeOutput } from "../utils/sanitization.js";
 export const characterApi = {
     find: {
         auth: {
@@ -7,7 +8,11 @@ export const characterApi = {
         },
         handler: async function (request, h) {
             const characters = await db.characterStore.find();
-            return h.response(characters).code(200);
+            const sanitizedCharacters = characters.map((character) => ({
+                ...character,
+                name: sanitizeOutput(character.name),
+            }));
+            return h.response(sanitizedCharacters).code(200);
         },
     },
     findOne: {
@@ -20,7 +25,11 @@ export const characterApi = {
                 if (character === null) {
                     return Boom.notFound("No Character with this id");
                 }
-                return h.response(character).code(200);
+                const sanitizedCharacter = {
+                    ...character,
+                    name: sanitizeOutput(character.name),
+                };
+                return h.response(sanitizedCharacter).code(200);
             }
             catch (err) {
                 return Boom.notFound("No Character with this id");
@@ -32,7 +41,12 @@ export const characterApi = {
             strategy: "jwt",
         },
         handler: async function (request, h) {
-            const character = await db.characterStore.add(request.payload);
+            const characterPayload = request.payload;
+            const sanitizedCharacterPayload = {
+                ...characterPayload,
+                name: sanitizeInput(characterPayload.name),
+            };
+            const character = await db.characterStore.add(sanitizedCharacterPayload);
             if (character !== null) {
                 return h.response(character).code(201);
             }

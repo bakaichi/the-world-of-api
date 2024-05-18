@@ -1,6 +1,7 @@
 import Boom from "@hapi/boom";
 import { db } from "../models/db.js";
 import { createToken } from "./jwt-utils.js";
+import { sanitizeInput, sanitizeOutput } from "../utils/sanitization.js";
 export const userApi = {
     find: {
         auth: {
@@ -9,7 +10,12 @@ export const userApi = {
         handler: async function (request, h) {
             try {
                 const users = await db.userStore.find();
-                return h.response(users).code(200);
+                const sanitizedUsers = users.map((user) => ({
+                    ...user,
+                    username: sanitizeOutput(user.username),
+                    email: sanitizeOutput(user.email),
+                }));
+                return h.response(sanitizedUsers).code(200);
             }
             catch (err) {
                 return Boom.serverUnavailable("Database Error");
@@ -22,11 +28,16 @@ export const userApi = {
         },
         handler: async function (request, h) {
             try {
-                const user = (await db.userStore.findOne(request.params.id));
+                const user = await db.userStore.findOne(request.params.id);
                 if (user === null) {
                     return Boom.notFound("No User with this id");
                 }
-                return h.response(user).code(200);
+                const sanitizedUser = {
+                    ...user,
+                    username: sanitizeOutput(user.username),
+                    email: sanitizeOutput(user.email),
+                };
+                return h.response(sanitizedUser).code(200);
             }
             catch (err) {
                 return Boom.serverUnavailable("Database error");
@@ -37,10 +48,14 @@ export const userApi = {
         auth: false,
         handler: async function (request, h) {
             try {
-                console.log("HERE");
                 const userPayload = request.payload;
-                console.log(userPayload);
-                const user = (await db.userStore.add(userPayload));
+                const sanitizedUserPayload = {
+                    ...userPayload,
+                    username: sanitizeInput(userPayload.username),
+                    email: sanitizeInput(userPayload.email),
+                    password: sanitizeInput(userPayload.password),
+                };
+                const user = await db.userStore.add(sanitizedUserPayload);
                 return h.response({ success: true }).code(201);
             }
             catch (err) {

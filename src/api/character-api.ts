@@ -1,6 +1,9 @@
 import Boom from "@hapi/boom";
 import { Request, ResponseToolkit } from "@hapi/hapi";
 import { db } from "../models/db.js";
+import { sanitizeInput, sanitizeOutput } from "../utils/sanitization.js";
+import { Character } from "../types/contribution-types.js"; // Ensure you have this type defined
+
 
 export const characterApi = {
     find: {
@@ -9,7 +12,11 @@ export const characterApi = {
         },
         handler: async function ( request: Request, h: ResponseToolkit) {
             const characters = await db.characterStore.find();
-            return h.response(characters).code(200);
+            const sanitizedCharacters = characters.map((character: Character) => ({
+              ...character,
+              name: sanitizeOutput(character.name),
+            }));      
+            return h.response(sanitizedCharacters).code(200);
         },
     },
     
@@ -23,7 +30,11 @@ export const characterApi = {
             if (character === null) {
               return Boom.notFound("No Character with this id");
             }
-            return h.response(character).code(200);
+            const sanitizedCharacter = {
+              ...character,
+              name: sanitizeOutput(character.name),
+            };    
+            return h.response(sanitizedCharacter).code(200);
           } catch (err) {
             return Boom.notFound("No Character with this id");
           }
@@ -35,12 +46,17 @@ export const characterApi = {
           strategy: "jwt",
         },
         handler: async function (request: Request, h: ResponseToolkit) {
-          const character = await db.characterStore.add(request.payload);
-          if (character !== null) {
-            return h.response(character).code(201);
-          }
-          return Boom.badImplementation("error creating character");
-        },
+          const characterPayload = request.payload as Character;
+          const sanitizedCharacterPayload = {
+            ...characterPayload,
+            name: sanitizeInput(characterPayload.name),
+          };    
+          const character = await db.characterStore.add(sanitizedCharacterPayload);
+            if (character !== null) {
+              return h.response(character).code(201);
+            }
+            return Boom.badImplementation("error creating character");
+         },
       },
 
       deleteAll: {

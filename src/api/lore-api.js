@@ -1,5 +1,6 @@
 import Boom from "@hapi/boom";
 import { db } from "../models/db.js";
+import { sanitizeInput, sanitizeOutput } from "../utils/sanitization.js";
 export const loreApi = {
     findAll: {
         auth: {
@@ -8,7 +9,12 @@ export const loreApi = {
         handler: async function (request, h) {
             try {
                 const lores = await db.loreStore.find();
-                return h.response(lores).code(200);
+                const sanitizedLores = lores.map((lore) => ({
+                    ...lore,
+                    lore: sanitizeOutput(lore.lore),
+                    contributor: sanitizeOutput(lore.contributor),
+                }));
+                return h.response(sanitizedLores).code(200);
             }
             catch (err) {
                 return Boom.serverUnavailable("Database Error");
@@ -21,7 +27,12 @@ export const loreApi = {
         },
         handler: async function (request, h) {
             const lores = (await db.loreStore.findBy(request.params.id));
-            return h.response(lores).code(200);
+            const sanitizedLores = lores.map(lore => ({
+                ...lore,
+                lore: sanitizeOutput(lore.lore),
+                contributor: sanitizeOutput(lore.contributor),
+            }));
+            return h.response(sanitizedLores).code(200);
         },
     },
     addLore: {
@@ -35,18 +46,18 @@ export const loreApi = {
                     return Boom.notFound("No Character with this id");
                 }
                 const payload = request.payload;
-                const lorePayload = JSON.parse(payload.lore);
+                const lorePayload = JSON.parse(sanitizeInput(payload.lore));
                 const images = payload.images;
                 // Handle images
                 const imageUrls = await handleImages(images);
                 const lore = {
                     bookno: lorePayload.bookno,
-                    charactersinv: character.name,
+                    charactersinv: sanitizeInput(character.name),
                     lat: lorePayload.lat,
                     lng: lorePayload.lng,
-                    lore: lorePayload.lore,
-                    contributor: lorePayload.contributor,
-                    nation: lorePayload.nation,
+                    lore: sanitizeInput(lorePayload.lore),
+                    contributor: sanitizeInput(lorePayload.contributor),
+                    nation: sanitizeInput(lorePayload.nation),
                     images: imageUrls,
                 };
                 // Add new lore to DB
@@ -62,7 +73,7 @@ export const loreApi = {
             parse: true,
             allow: "multipart/form-data",
             multipart: true,
-            maxBytes: 10 * 1024 * 1024, // Limit filesize to 10mb
+            maxBytes: 3 * 1024 * 1024, // Limit filesize to 3mb
         },
     },
     deleteAll: {
@@ -85,7 +96,12 @@ export const loreApi = {
                 if (!lore) {
                     return Boom.notFound("No Lore with this id");
                 }
-                return h.response(lore).code(200);
+                const sanitizedLore = {
+                    ...lore,
+                    lore: sanitizeOutput(lore.lore),
+                    contributor: sanitizeOutput(lore.contributor),
+                };
+                return h.response(sanitizedLore).code(200);
             }
             catch (err) {
                 return Boom.serverUnavailable("DB error");
@@ -137,5 +153,5 @@ async function handleImages(images) {
         });
         imageUrls.push(`data:${image.hapi.headers['content-type']};base64,${imageData}`);
     }
-    return imageUrls;
+    return imageUrls.map(url => sanitizeOutput(url));
 }

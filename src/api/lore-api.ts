@@ -3,6 +3,7 @@ import { Request, ResponseToolkit } from "@hapi/hapi";
 import { db } from "../models/db.js";
 import { Lore, Character } from "../types/contribution-types.js";
 import { Readable } from "stream";
+import { sanitizeInput, sanitizeOutput } from "../utils/sanitization.js";
 
 export const loreApi = {
     findAll: {
@@ -12,7 +13,12 @@ export const loreApi = {
       handler: async function (request: Request, h: ResponseToolkit) {
         try {
           const lores = await db.loreStore.find();
-          return h.response(lores).code(200);
+          const sanitizedLores = lores.map((lore: Lore) => ({
+            ...lore,
+            lore: sanitizeOutput(lore.lore),
+            contributor: sanitizeOutput(lore.contributor as string),
+          }));  
+          return h.response(sanitizedLores).code(200);
         } catch (err) {
           return Boom.serverUnavailable("Database Error");
         }
@@ -24,8 +30,13 @@ export const loreApi = {
         strategy: "jwt",
       },
       handler: async function (request: Request, h: ResponseToolkit) {
-        const lores = (await db.loreStore.findBy(request.params.id)) as Lore;
-        return h.response(lores).code(200);
+        const lores = (await db.loreStore.findBy(request.params.id)) as Lore[];
+        const sanitizedLores = lores.map(lore => ({
+          ...lore,
+          lore: sanitizeOutput(lore.lore),
+          contributor: sanitizeOutput(lore.contributor as string),
+        }));  
+        return h.response(sanitizedLores).code(200);
       },
     },
   
@@ -42,7 +53,7 @@ export const loreApi = {
   
           const payload = request.payload as { lore: any, images: any };
           
-          const lorePayload = JSON.parse(payload.lore) as Lore;
+          const lorePayload = JSON.parse(sanitizeInput(payload.lore)) as Lore;
           const images = payload.images;
   
           // Handle images
@@ -50,14 +61,14 @@ export const loreApi = {
   
           const lore: Lore = {
             bookno: lorePayload.bookno,
-            charactersinv: character.name,
+            charactersinv: sanitizeInput(character.name),
             lat: lorePayload.lat,
             lng: lorePayload.lng,
-            lore: lorePayload.lore,
-            contributor: lorePayload.contributor,
-            nation: lorePayload.nation,
+            lore: sanitizeInput(lorePayload.lore),
+            contributor: sanitizeInput(lorePayload.contributor),
+            nation: sanitizeInput(lorePayload.nation),
             images: imageUrls,
-          };
+          };  
   
           // Add new lore to DB
           const newLore = await db.loreStore.add(lore as Lore);
@@ -71,7 +82,7 @@ export const loreApi = {
         parse: true,
         allow: "multipart/form-data",
         multipart: true,
-        maxBytes: 10 * 1024 * 1024, // Limit filesize to 10mb
+        maxBytes: 3 * 1024 * 1024, // Limit filesize to 3mb
       },
     },
   
@@ -96,7 +107,12 @@ export const loreApi = {
           if(!lore){
             return Boom.notFound("No Lore with this id");
           }
-          return h.response(lore).code(200);
+          const sanitizedLore = {
+            ...lore,
+            lore: sanitizeOutput(lore.lore),
+            contributor: sanitizeOutput(lore.contributor as string),
+          };
+          return h.response(sanitizedLore).code(200);
         } catch (err) {
           return Boom.serverUnavailable("DB error");
         }
@@ -155,5 +171,5 @@ export const loreApi = {
       imageUrls.push(`data:${image.hapi.headers['content-type']};base64,${imageData}`);
     }
   
-    return imageUrls;
+    return imageUrls.map(url => sanitizeOutput(url));
   }
