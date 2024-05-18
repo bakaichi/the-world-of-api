@@ -1,20 +1,27 @@
+import bcrypt from "bcrypt"
+
+async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
+}
+
 export const seedData = {
     users: {
       _model: "User",
       homer: {
         username: "HomerSimpson",
         email: "homer@simpson.com",
-        password: "secret",
+        password: await hashPassword("secret"),
       },
       marge: {
         username: "MargeSimpson",
         email: "marge@simpson.com",
-        password: "secret",
+        password: await hashPassword("secret"),
       },
       bart: {
         username: "BartSimpson",
         email: "bart@simpson.com",
-        password: "secret",
+        password: await hashPassword("secret"),
       },
     },
     characters: {

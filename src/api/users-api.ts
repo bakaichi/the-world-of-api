@@ -4,6 +4,9 @@ import { db } from "../models/db.js";
 import { createToken } from "./jwt-utils.js";
 import { User } from "../types/contribution-types.js";
 import { sanitizeInput, sanitizeOutput } from "../utils/sanitization.js";
+import bcrypt from  "bcrypt";
+
+const saltRounds = 10;
 
 export const userApi = {
   find: {
@@ -52,11 +55,12 @@ export const userApi = {
     handler: async function (request: Request, h: ResponseToolkit) {
       try {
         const userPayload = request.payload as User;
+        const hashedPassword = await bcrypt.hash(sanitizeInput(userPayload.password), saltRounds);
         const sanitizedUserPayload = {
           ...userPayload,
           username: sanitizeInput(userPayload.username),
           email: sanitizeInput(userPayload.email),
-          password: sanitizeInput(userPayload.password),
+          password: hashedPassword,
         };
         const user = await db.userStore.add(sanitizedUserPayload);
         return h.response({ success: true }).code(201);
@@ -85,10 +89,10 @@ export const userApi = {
     handler: async function (request: Request, h: ResponseToolkit) {
       const payload = request.payload as User;
       try {
-        const user = (await db.userStore.findBy(payload.email)) as User;
+        const user = await db.userStore.findBy(sanitizeInput(payload.email));
         if (user === null) return Boom.unauthorized("User not found");
-        const passwordsMatch: boolean = payload.password === user.password;
-        if (!passwordsMatch) return Boom.unauthorized("Invalid password");
+        
+        const passwordsMatch = await bcrypt.compare(payload.password, user.password);        if (!passwordsMatch) return Boom.unauthorized("Invalid password");
         const token = createToken(user);
         return h.response({ success: true, 
                             name: `${user.username}`, 
