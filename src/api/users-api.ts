@@ -92,7 +92,8 @@ export const userApi = {
         const user = await db.userStore.findBy(sanitizeInput(payload.email));
         if (user === null) return Boom.unauthorized("User not found");
         
-        const passwordsMatch = await bcrypt.compare(payload.password, user.password);        if (!passwordsMatch) return Boom.unauthorized("Invalid password");
+        const passwordsMatch = await bcrypt.compare(payload.password, user.password);       
+         if (!passwordsMatch) return Boom.unauthorized("Invalid password");
         const token = createToken(user);
         return h.response({ success: true, 
                             name: `${user.username}`, 
