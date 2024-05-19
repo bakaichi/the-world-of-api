@@ -14,12 +14,12 @@ export const seedData = {
         marge: {
             username: "MargeSimpson",
             email: "marge@simpson.com",
-            password: "secret",
+            password: await hashPassword("secret"),
         },
         bart: {
             username: "BartSimpson",
             email: "bart@simpson.com",
-            password: "secret",
+            password: await hashPassword("secret"),
         },
     },
     characters: {
