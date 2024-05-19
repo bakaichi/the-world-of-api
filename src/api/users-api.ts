@@ -55,7 +55,6 @@ export const userApi = {
     handler: async function (request: Request, h: ResponseToolkit) {
       try {
         const userPayload = request.payload as User;
-        console.log("User creation request received with payload:", userPayload);
         const hashedPassword = await bcrypt.hash(sanitizeInput(userPayload.password), saltRounds);
         const sanitizedUserPayload = {
           ...userPayload,
@@ -63,12 +62,9 @@ export const userApi = {
           email: sanitizeInput(userPayload.email),
           password: hashedPassword,
         };
-        console.log("Sanitized user payload:", sanitizedUserPayload);
         const user = await db.userStore.add(sanitizedUserPayload);
-        console.log("User created successfully:", user);
         return h.response({ success: true }).code(201);
       } catch (err) {
-        console.error("User creation error:", err);
         return Boom.serverUnavailable("Database Error");
       }
     },
@@ -92,31 +88,17 @@ export const userApi = {
     auth: false,
     handler: async function (request: Request, h: ResponseToolkit) {
       const payload = request.payload as User;
-      console.log("Authentication request received with payload:", payload);
-  
       try {
         const user = await db.userStore.findBy(sanitizeInput(payload.email));
-        if (user === null) {
-          console.error("User not found for email:", payload.email);
-          return Boom.unauthorized("User not found");
-        }
-  
-        const passwordsMatch = await bcrypt.compare(payload.password, user.password);
-        if (!passwordsMatch) {
-          console.error("Invalid password for email:", payload.email);
-          return Boom.unauthorized("Invalid password");
-        }
-  
+        if (user === null) return Boom.unauthorized("User not found");
+        
+        const passwordsMatch = await bcrypt.compare(payload.password, user.password);        if (!passwordsMatch) return Boom.unauthorized("Invalid password");
         const token = createToken(user);
-        console.log("User authenticated successfully:", user);
-        return h.response({
-          success: true,
-          name: `${user.username}`,
-          token: token,
-          _id: user._id,
-        }).code(201);
+        return h.response({ success: true, 
+                            name: `${user.username}`, 
+                            token: token, _id: user._id 
+                          }).code(201);
       } catch (err) {
-        console.error("Database error:", err);
         return Boom.serverUnavailable("Database Error");
       }
     },
