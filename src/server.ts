@@ -39,9 +39,9 @@ async function initPlugins(server: Server) {
     },
     relativeTo: __dirname,
     path: "./views",
-    layoutPath: "./views/Layout.hbs",
+    layoutPath: "./views/",
     partialsPath: "./views/partials",
-    layout: true,
+    layout: "Layout",
     isCached: false,
   });
 
