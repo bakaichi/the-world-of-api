@@ -42,6 +42,19 @@ async function initPlugins(server: Server) {
     layout: true,
     isCached: false,
   });
+
+  // serving static files from the "public" directory inside "src/lib" in sveltekit
+  server.route({
+    method: "GET",
+    path: "/public/{param*}",
+    handler: {
+      directory: {
+        path: path.join(__dirname, "src/lib/public"),
+        redirectToSlash: true,
+        index: true,
+      },
+    },
+  });
 }
 
 function initSecurityStrategies(server: Server) {
