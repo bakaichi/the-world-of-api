@@ -23,7 +23,7 @@ function importEnvs() {
   const result = dotenv.config();
   if (result.error) {
     console.log(result.error.message);
-    process.exit(1); // Exit if there's an error loading .env file
+    //process.exit(1); // Exit if there's an error loading .env file
   }
 }
 
